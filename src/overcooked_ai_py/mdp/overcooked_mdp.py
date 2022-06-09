@@ -744,7 +744,7 @@ class OvercookedState(object):
             order_lists_equal
 
     def __eq__(self, other):
-        return self.time_independent_equal(other) and self.timestep == other.timestep
+        return self.time_independent_equal(other)
 
     def __hash__(self):
         order_list_hash = hash(tuple(self.bonus_orders)) + hash(tuple(self.all_orders))
