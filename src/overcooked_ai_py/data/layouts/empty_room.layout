@@ -1,11 +1,11 @@
 {
-    "grid":  """XXXXXXX
-                X     X
+    "grid":  """XXXPXXX
+                X     O
                 X     X
                 X 1 2 X
                 X     X
                 X     X
-                XDXXXXX""",
+                XDXXXSX""",
     "start_bonus_orders": [],
     "start_all_orders" : [],
     "rew_shaping_params": None
