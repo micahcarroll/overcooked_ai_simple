@@ -1,9 +1,12 @@
-import itertools, copy, warnings
-import numpy as np
+import copy
+import itertools
+import warnings
+from collections import Counter, defaultdict
 from functools import reduce
-from collections import defaultdict, Counter
-from overcooked_ai_py.utils import pos_distance, read_layout_dict, classproperty
+
+import numpy as np
 from overcooked_ai_py.mdp.actions import Action, Direction
+from overcooked_ai_py.utils import classproperty, pos_distance, read_layout_dict
 
 
 class Recipe:
@@ -1614,8 +1617,8 @@ class OvercookedGridworld(object):
 
         assert all(c in 'XOPDST123456789 ' for c in all_elements), 'Invalid character in grid'
         assert all_elements.count('1') == 1, "'1' must be present exactly once"
-        assert all_elements.count('D') >= 1, "'D' must be present at least once"
-        assert all_elements.count('S') >= 1, "'S' must be present at least once"
+        # assert all_elements.count('D') >= 1, "'D' must be present at least once"
+        # assert all_elements.count('S') >= 1, "'S' must be present at least once"
         assert all_elements.count('P') >= 1, "'P' must be present at least once"
         assert all_elements.count('O') >= 1 or all_elements.count('T') >= 1, "'O' or 'T' must be present at least once"
 
