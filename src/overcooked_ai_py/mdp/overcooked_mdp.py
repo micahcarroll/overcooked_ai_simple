@@ -1153,28 +1153,26 @@ class OvercookedGridworld(object):
                 obj = ObjectState('onion', pos)
                 player.set_object(obj)
 
-            # NOTE Simplification: no tomato or dish interactions allowed
-            # elif terrain_type == 'T' and player.held_object is None:
-            #     # Tomato pickup from dispenser
-            #     player.set_object(ObjectState('tomato', pos))
-            #
-            # elif terrain_type == 'D' and player.held_object is None:
-            #     self.log_object_pickup(events_infos, new_state, "dish", pot_states, player_idx)
-            #
-            #     # Give shaped reward if pickup is useful
-            #     if self.is_dish_pickup_useful(new_state, pot_states):
-            #         shaped_reward[player_idx] += self.reward_shaping_params["DISH_PICKUP_REWARD"]
-            #
-            #     # Perform dish pickup from dispenser
-            #     obj = ObjectState('dish', pos)
-            #     player.set_object(obj)
+            elif terrain_type == 'T' and player.held_object is None:
+                # Tomato pickup from dispenser
+                player.set_object(ObjectState('tomato', pos))
 
-            # NOTE Simplification: no cooking dynamics
-            # elif terrain_type == 'P' and not player.has_object():
-            #     # Cooking soup
-            #     if self.soup_to_be_cooked_at_location(new_state, i_pos):
-            #         soup = new_state.get_object(i_pos)
-            #         soup.begin_cooking()
+            elif terrain_type == 'D' and player.held_object is None:
+                self.log_object_pickup(events_infos, new_state, "dish", pot_states, player_idx)
+
+                # Give shaped reward if pickup is useful
+                if self.is_dish_pickup_useful(new_state, pot_states):
+                    shaped_reward[player_idx] += self.reward_shaping_params["DISH_PICKUP_REWARD"]
+
+                # Perform dish pickup from dispenser
+                obj = ObjectState('dish', pos)
+                player.set_object(obj)
+
+            elif terrain_type == 'P' and not player.has_object():
+                # Cooking soup
+                if self.soup_to_be_cooked_at_location(new_state, i_pos):
+                    soup = new_state.get_object(i_pos)
+                    soup.begin_cooking()
             
             elif terrain_type == 'P' and player.has_object():
 
@@ -1190,34 +1188,32 @@ class OvercookedGridworld(object):
                 elif player.get_object().name in Recipe.ALL_INGREDIENTS:
                     # Adding ingredient to soup
 
-                    # NOTE Simplification: no soups exist
-                    # if not new_state.has_object(i_pos):
-                    #     # Pot was empty, add soup to it
-                    #     new_state.add_object(SoupState(i_pos, ingredients=[]))
+                    if not new_state.has_object(i_pos):
+                        # Pot was empty, add soup to it
+                        new_state.add_object(SoupState(i_pos, ingredients=[]))
 
                     # Add ingredient if possible
-                    # soup = new_state.get_object(i_pos)
-                    # if not soup.is_full:
-                        # old_soup = soup.deepcopy()
-                    obj = player.remove_object()
-                    # soup.add_ingredient(obj)
-                    shaped_reward[player_idx] += self.reward_shaping_params["PLACEMENT_IN_POT_REW"]
+                    soup = new_state.get_object(i_pos)
+                    if not soup.is_full:
+                        old_soup = soup.deepcopy()
+                        obj = player.remove_object()
+                        soup.add_ingredient(obj)
+                        shaped_reward[player_idx] += self.reward_shaping_params["PLACEMENT_IN_POT_REW"]
 
-                    # # Log potting
-                    # self.log_object_potting(events_infos, new_state, old_soup, soup, obj.name, player_idx)
-                    # if obj.name == Recipe.ONION:
-                    #     events_infos['potting_onion'][player_idx] = True
+                        # Log potting
+                        self.log_object_potting(events_infos, new_state, old_soup, soup, obj.name, player_idx)
+                        if obj.name == Recipe.ONION:
+                            events_infos['potting_onion'][player_idx] = True
 
-            # NOTE Simplification: no soup deliveries
-            # elif terrain_type == 'S' and player.has_object():
-            #     obj = player.get_object()
-            #     if obj.name == 'soup':
-            #
-            #         delivery_rew = self.deliver_soup(new_state, player, obj)
-            #         sparse_reward[player_idx] += delivery_rew
-            #
-            #         # Log soup delivery
-            #         events_infos['soup_delivery'][player_idx] = True
+            elif terrain_type == 'S' and player.has_object():
+                obj = player.get_object()
+                if obj.name == 'soup':
+
+                    delivery_rew = self.deliver_soup(new_state, player, obj)
+                    sparse_reward[player_idx] += delivery_rew
+
+                    # Log soup delivery
+                    events_infos['soup_delivery'][player_idx] = True
 
         return sparse_reward, shaped_reward
 
