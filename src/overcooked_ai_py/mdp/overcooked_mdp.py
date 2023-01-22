@@ -1171,8 +1171,12 @@ class OvercookedGridworld(object):
             elif terrain_type == 'P' and not player.has_object():
                 # Cooking soup
                 if self.soup_to_be_cooked_at_location(new_state, i_pos):
-                    soup = new_state.get_object(i_pos)
-                    soup.begin_cooking()
+                    # Interacting will remove soup object from pot
+                    _ = new_state.remove_object(i_pos)
+
+                    # Old code
+                    # soup = new_state.get_object(i_pos)
+                    # soup.begin_cooking()
             
             elif terrain_type == 'P' and player.has_object():
 
